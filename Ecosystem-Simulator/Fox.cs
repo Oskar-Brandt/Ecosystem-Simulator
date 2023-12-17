@@ -6,31 +6,32 @@ using System.Threading.Tasks;
 
 namespace Ecosystem_Simulator
 {
-    internal class Fox : Animal
+    internal class Fox : MediumAnimal
     {
-        public override int MaxAge => 10;
-
+        public override int MaxAge => 12;
         public override int MatureAge => 2;
-
-        public override int MaxHunger => 6;
-
+        public override int MaxHunger => 8;
         public override int LitterSize => 1;
-
         public override int PregnancyDuration => 3;
 
         public Fox(int age) : base(age)
         {
         }
 
-        public override void mate()
+        public override bool canEat(IEatable foodItem)
         {
-            throw new NotImplementedException();
+            if (base.canEat(foodItem))
+            {
+                if (foodItem.GetType() == typeof(SmallAnimal))
+                {
+                    return true;
+                }
+            }
+            
+
+            return false;
         }
 
-        public override void eat()
-        {
-            throw new NotImplementedException();
-        }
 
         public override void move()
         {
