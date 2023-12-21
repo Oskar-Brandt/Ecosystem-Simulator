@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ecosystem_Simulator.Interfaces;
 
-namespace Ecosystem_Simulator
+namespace Ecosystem_Simulator.Plants
 {
     internal class Dandelion : Plant, IEatable
     {
         public int NutritionalValue => 1;
 
-        public override void spread()
+        public Dandelion() : base()
         {
-            throw new NotImplementedException();
-        }
 
-        public override void die()
+        }
+        public override Plant spread()
         {
-            throw new NotImplementedException();
+            return new Dandelion();
         }
     }
 }

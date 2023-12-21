@@ -4,18 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ecosystem_Simulator
+namespace Ecosystem_Simulator.Plants
 {
     abstract class Plant
     {
         public bool IsDead { get; set; }
 
-        public Plant() {
+        public Plant()
+        {
             IsDead = false;
         }
 
-        public abstract void spread();
+        public abstract Plant spread();
 
-        public abstract void die();
+        public void die()
+        {
+            IsDead = true;
+        }
     }
 }

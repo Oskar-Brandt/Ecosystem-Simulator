@@ -4,8 +4,9 @@ using System.Linq;
 using System.Net.Cache;
 using System.Text;
 using System.Threading.Tasks;
+using Ecosystem_Simulator.Interfaces;
 
-namespace Ecosystem_Simulator
+namespace Ecosystem_Simulator.Animals
 {
     abstract class Animal
     {
@@ -19,11 +20,11 @@ namespace Ecosystem_Simulator
         public bool IsDead { get; set; }
         public bool IsPregnant { get; set; }
         public int MovementSpeed { get; set; }
-        
+
         public Animal(int age)
         {
             CurrentAge = age;
-            CurrentHunger = MaxHunger;
+            CurrentHunger = (int)(Math.Ceiling(MaxHunger * 0.75));
             IsDead = false;
             IsPregnant = false;
             MovementSpeed = 1;
@@ -34,9 +35,9 @@ namespace Ecosystem_Simulator
             CurrentHunger += foodItem.NutritionalValue;
         }
 
-        public virtual bool canEat(IEatable foodItem)
+        public virtual bool isHungry(IEatable foodItem)
         {
-            return (CurrentHunger < MaxHunger);
+            return CurrentHunger < MaxHunger;
         }
 
         public void mate(Animal matingPartner)
@@ -58,22 +59,28 @@ namespace Ecosystem_Simulator
             }
         }
 
-        public abstract void move();
+        public int move()
+        {
+            return MovementSpeed;
+        }
 
-        public abstract void giveBirth();
+        public abstract List<Animal> giveBirth();
 
         public void age()
         {
             CurrentAge++;
-            if (CurrentAge > MaxAge) {
+            if (CurrentAge > MaxAge)
+            {
                 die();
+
             }
         }
 
         public void hungrify()
         {
             CurrentHunger--;
-            if(CurrentHunger <= 0) {
+            if (CurrentHunger <= 0)
+            {
                 die();
             }
         }
@@ -85,33 +92,33 @@ namespace Ecosystem_Simulator
 
         public bool canMate()
         {
-            bool willMate = true;
+            bool canMate = true;
 
             //Animal cannot mate if too hungry (needs to conserve energy). Represented by its currentHunger being less than 1/4 of maxHunger
-            if (CurrentHunger <= (MaxHunger / 4))
+            if (CurrentHunger <= MaxHunger / 4)
             {
-                willMate = false;
+                canMate = false;
             }
 
             //Animal cannot mate if too old (infertility due to old age). Represented by its currentAge being more than maxAge - pregnancyDuration (It will die before giving birth)
-            else if (CurrentAge > (MaxAge - PregnancyDuration))
+            else if (CurrentAge > MaxAge - PregnancyDuration)
             {
-                willMate = false;
+                canMate = false;
             }
 
             //Animal cannot mate if it is already pregnant.
             else if (IsPregnant)
             {
-                willMate = false;
+                canMate = false;
             }
 
             //Animal cannot mate if it has not reached maturity
-            else if(MatureAge > CurrentAge)
+            else if (MatureAge > CurrentAge)
             {
-                willMate = false;
+                canMate = false;
             }
 
-            return willMate;
+            return canMate;
         }
 
     }

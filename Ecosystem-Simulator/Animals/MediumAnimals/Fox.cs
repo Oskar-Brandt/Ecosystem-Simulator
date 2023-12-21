@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ecosystem_Simulator.Animals.SmallAnimals;
+using Ecosystem_Simulator.Interfaces;
 
-namespace Ecosystem_Simulator
+namespace Ecosystem_Simulator.Animals.MediumAnimals
 {
     internal class Fox : MediumAnimal
     {
@@ -18,29 +20,27 @@ namespace Ecosystem_Simulator
         {
         }
 
-        public override bool canEat(IEatable foodItem)
+        public override bool isHungry(IEatable foodItem)
         {
-            if (base.canEat(foodItem))
+            if (base.isHungry(foodItem))
             {
                 if (foodItem.GetType() == typeof(SmallAnimal))
                 {
                     return true;
                 }
             }
-            
-
             return false;
         }
 
-
-        public override void move()
+        public override List<Animal> giveBirth()
         {
-            throw new NotImplementedException();
-        }
+            List<Animal> animals = new List<Animal>();
+            for (int i = 0; i < LitterSize; i++)
+            {
+                animals.Add(new Fox(i));
+            }
+            return animals;
 
-        public override void giveBirth()
-        {
-            throw new NotImplementedException();
         }
 
     }

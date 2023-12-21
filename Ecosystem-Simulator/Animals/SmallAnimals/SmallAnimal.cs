@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ecosystem_Simulator.Interfaces;
 
-namespace Ecosystem_Simulator
+namespace Ecosystem_Simulator.Animals.SmallAnimals
 {
     abstract class SmallAnimal : Animal
     {
@@ -23,15 +24,12 @@ namespace Ecosystem_Simulator
         {
         }
 
-        public override bool canEat(IEatable foodItem)
+        public override bool isHungry(IEatable foodItem)
         {
-            return base.canEat(foodItem);
+            return base.isHungry(foodItem);
         }
 
-
-        public override abstract void move();
-
-        public override abstract void giveBirth();
+        public override abstract List<Animal> giveBirth();
 
     }
 }
