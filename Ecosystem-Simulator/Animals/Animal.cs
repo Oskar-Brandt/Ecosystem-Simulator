@@ -33,6 +33,11 @@ namespace Ecosystem_Simulator.Animals
         public void eat(IEatable foodItem)
         {
             CurrentHunger += foodItem.NutritionalValue;
+            if (CurrentHunger > MaxHunger)
+            {
+                CurrentHunger = MaxHunger;
+            }
+            foodItem.Eaten = true;
         }
 
         public virtual bool isHungry(IEatable foodItem)

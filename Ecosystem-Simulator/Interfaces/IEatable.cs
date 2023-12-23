@@ -9,7 +9,7 @@ namespace Ecosystem_Simulator.Interfaces
     internal interface IEatable
     {
         int NutritionalValue { get; }
-
+        
 
     }
 }
