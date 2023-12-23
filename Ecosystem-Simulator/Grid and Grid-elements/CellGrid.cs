@@ -43,7 +43,7 @@ namespace Ecosystem_Simulator
         //
         //Sets the initial state of the grid, or rather, which cells start out being activated
         //May be determined randomly, though a number can be passed to the param to note how many cells should be activated
-        private State setInitialActivations(int initialRabbits, int initialFoxes)
+        private State setInitialState(int initialRabbits, int initialFoxes)
         {
             State initState;
 
@@ -59,9 +59,7 @@ namespace Ecosystem_Simulator
         //Should probably use CellGenerator (Or a new class), which then uses some kind of pattern (New class may be needed for this too)
         public State generateNextState(State currentState)
         {
-            State nextState;
-
-            nextState = StateChanger.generateNextState(currentState);
+            State nextState = StateChanger.generateNextState(currentState);
 
             return nextState;
         }

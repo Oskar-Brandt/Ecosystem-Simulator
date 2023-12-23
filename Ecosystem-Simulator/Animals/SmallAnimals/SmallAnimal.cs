@@ -18,7 +18,7 @@ namespace Ecosystem_Simulator.Animals.SmallAnimals
 
         public override abstract int LitterSize { get; }
 
-        public override abstract int PregnancyDuration { get; }
+        public override abstract int MaxPregnancyDuration { get; }
 
         public SmallAnimal(int age) : base(age)
         {

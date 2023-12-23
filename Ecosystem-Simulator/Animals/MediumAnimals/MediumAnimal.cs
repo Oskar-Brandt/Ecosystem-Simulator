@@ -18,7 +18,7 @@ namespace Ecosystem_Simulator.Animals.MediumAnimals
 
         public override abstract int LitterSize { get; }
 
-        public override abstract int PregnancyDuration { get; }
+        public override abstract int MaxPregnancyDuration { get; }
 
         public MediumAnimal(int age) : base(age)
         {

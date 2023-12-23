@@ -14,12 +14,13 @@ namespace Ecosystem_Simulator.Animals
         public abstract int MatureAge { get; }
         public abstract int MaxHunger { get; }
         public abstract int LitterSize { get; }
-        public abstract int PregnancyDuration { get; }
+        public abstract int MaxPregnancyDuration { get; }
         public int CurrentAge { get; set; }
         public int CurrentHunger { get; set; }
         public bool IsDead { get; set; }
         public bool IsPregnant { get; set; }
         public int MovementSpeed { get; set; }
+        public int PregnancyDurationCounter { get; set; }
 
         public Animal(int age)
         {
@@ -28,6 +29,7 @@ namespace Ecosystem_Simulator.Animals
             IsDead = false;
             IsPregnant = false;
             MovementSpeed = 1;
+            PregnancyDurationCounter = 0;
         }
 
         public void eat(IEatable foodItem)
@@ -37,7 +39,7 @@ namespace Ecosystem_Simulator.Animals
             {
                 CurrentHunger = MaxHunger;
             }
-            foodItem.Eaten = true;
+            
         }
 
         public virtual bool isHungry(IEatable foodItem)
@@ -74,6 +76,11 @@ namespace Ecosystem_Simulator.Animals
         public void age()
         {
             CurrentAge++;
+            if(IsPregnant)
+            {
+                PregnancyDurationCounter++;
+            }
+
             if (CurrentAge > MaxAge)
             {
                 die();
@@ -106,7 +113,7 @@ namespace Ecosystem_Simulator.Animals
             }
 
             //Animal cannot mate if too old (infertility due to old age). Represented by its currentAge being more than maxAge - pregnancyDuration (It will die before giving birth)
-            else if (CurrentAge > MaxAge - PregnancyDuration)
+            else if (CurrentAge > MaxAge - MaxPregnancyDuration)
             {
                 canMate = false;
             }

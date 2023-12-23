@@ -16,7 +16,7 @@ namespace Ecosystem_Simulator.Animals.SmallAnimals
         public override int MatureAge => 4;
         public override int MaxHunger => 6;
         public override int LitterSize => 3;
-        public override int PregnancyDuration => 2;
+        public override int MaxPregnancyDuration => 2;
         public int NutritionalValue => 2;
 
         public Rabbit(int age) : base(age)
@@ -43,6 +43,8 @@ namespace Ecosystem_Simulator.Animals.SmallAnimals
             {
                 animals.Add(new Rabbit(i));
             }
+            IsPregnant = false;
+            PregnancyDurationCounter = 0;
             return animals;
 
         }

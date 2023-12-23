@@ -5,6 +5,7 @@ using Ecosystem_Simulator.Interfaces;
 using Ecosystem_Simulator.Plants;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Ecosystem_Simulator
 {
@@ -21,11 +22,11 @@ namespace Ecosystem_Simulator
             leftBotCorner,
             bot,
             rightBotCorner
-            
+
         }
         public StateChanger()
         {
-            
+
         }
 
         public State setInitialState(Cell[,] cells, int initialRabbits, int initialFoxes)
@@ -47,7 +48,7 @@ namespace Ecosystem_Simulator
                 addAnimalToCell(cells, fox);
             }
 
-            for(int i = 0; i < numOfDandelions; i++)
+            for (int i = 0; i < numOfDandelions; i++)
             {
                 Dandelion dandelion = new Dandelion();
 
@@ -59,10 +60,8 @@ namespace Ecosystem_Simulator
 
         public State generateNextState(State currentState)
         {
-            State nextState = new State(currentState.Cells);
 
             Cell[,] currentCells = currentState.Cells;
-            Cell[,] nextStateCells = nextState.Cells;
 
             List<Dictionary<NearbyCell, Cell>> rabbitTargets = new List<Dictionary<NearbyCell, Cell>>();
             List<Dictionary<NearbyCell, Cell>> foxTargets = new List<Dictionary<NearbyCell, Cell>>();
@@ -72,16 +71,16 @@ namespace Ecosystem_Simulator
             int newFoxCount = 0;
             int newPlantCount = 0;
 
-            for (int i = 0;i < currentCells.GetLength(0); i++)
+            for (int i = 0; i < currentCells.GetLength(0); i++)
             {
-                for (int j = 0;j < currentCells.GetLength(1); j++)
+                for (int j = 0; j < currentCells.GetLength(1); j++)
                 {
-                    Cell currentCell = currentCells[i,j];
+                    Cell currentCell = currentCells[i, j];
                     if (currentCell != null)
                     {
                         if (currentCell.AnimalInCell != null)
                         {
-                            if(currentCell.AnimalInCell is Rabbit)
+                            if (currentCell.AnimalInCell is Rabbit)
                             {
                                 Dictionary<NearbyCell, Cell> rabbitTarget = getNearbyCells(currentCells, i, j);
                                 rabbitTargets.Add(rabbitTarget);
@@ -105,22 +104,22 @@ namespace Ecosystem_Simulator
 
             //Using the above seems okay, BUT, the animal and plant in each cell may be removed by another animal, before its turn. This should be checked, probably in the "Thing"TakesTurn methods
 
-            foreach(Dictionary<NearbyCell, Cell> plantTarget in plantTargets)
+            foreach (Dictionary<NearbyCell, Cell> plantTarget in plantTargets)
             {
                 plantTakesTurn(plantTarget);
             }
 
-            foreach(Dictionary<NearbyCell, Cell> rabbitTarget in rabbitTargets)
+            foreach (Dictionary<NearbyCell, Cell> rabbitTarget in rabbitTargets)
             {
                 animalTakesTurn(rabbitTarget);
             }
 
-            foreach(Dictionary<NearbyCell, Cell> foxTarget in foxTargets)
+            foreach (Dictionary<NearbyCell, Cell> foxTarget in foxTargets)
             {
                 animalTakesTurn(foxTarget);
             }
 
-            return nextState;
+            return currentState;
 
         }
 
@@ -128,6 +127,10 @@ namespace Ecosystem_Simulator
         {
             Cell cell = animalTarget[NearbyCell.target];
             Animal animal = cell.AnimalInCell;
+            if (animal == null)
+            {
+                return false;
+            }
 
             animal.age();
             animal.hungrify();
@@ -139,19 +142,32 @@ namespace Ecosystem_Simulator
             }
             else
             {
-                if(nearbyCellContainsFood(animalTarget))
+                if (nearbyCellContainsFood(animalTarget))
                 {
                     letAnimalEat(animalTarget, animal);
                 }
 
-                if(nearbyCellContainsAnimal(animalTarget))
+                if (nearbyCellContainsAnimal(animalTarget))
                 {
                     letAnimalMate(animalTarget, animal);
                 }
 
+                if (animal.IsPregnant)
+                {
+                    if (animal.PregnancyDurationCounter == animal.MaxPregnancyDuration)
+                    {
+                        List<Animal> animalOffspring = animal.giveBirth();
+
+                        foreach (Animal offSpring in animalOffspring)
+                        {
+                            addOffspring(offSpring, animalTarget);
+                        }
+                    }
+                }
+
                 letAnimalMove(animalTarget, animal);
 
-                return false;
+                return true;
             }
         }
 
@@ -160,6 +176,11 @@ namespace Ecosystem_Simulator
             Cell cell = plantTarget[NearbyCell.target];
             Plant plant = cell.PlantInCell;
 
+            if (plant == null)
+            {
+                return false;
+            }
+
             if (plant.IsDead)
             {
                 cell.Remove(plant);
@@ -167,7 +188,7 @@ namespace Ecosystem_Simulator
             }
             else
             {
-                letPlantSpread(plantTarget, plant);
+                return letPlantSpread(plantTarget, plant);
             }
         }
 
@@ -192,7 +213,7 @@ namespace Ecosystem_Simulator
             Random rand = new Random();
             int row;
             int col;
-            
+
             while (!cellCanContainPlant)
             {
                 row = rand.Next(0, cells.GetLength(0));
@@ -210,19 +231,47 @@ namespace Ecosystem_Simulator
             }
         }
 
+        private bool addOffspring(Animal offSpring, Dictionary<NearbyCell, Cell> nearbyCells)
+        {
+            foreach (Cell nearbyCell in nearbyCells.Values)
+            {
+                if (nearbyCell.AnimalInCell == null)
+                {
+                    nearbyCell.AnimalInCell = offSpring;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool letPlantSpread(Dictionary<NearbyCell, Cell> nearbyCells, Plant spreadingPlant)
+        {
+            Plant newPlant = spreadingPlant.spread();
+
+            foreach (Cell nearbyCell in nearbyCells.Values)
+            {
+                if (nearbyCell.PlantInCell == null)
+                {
+                    nearbyCell.PlantInCell = newPlant;
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public bool nearbyCellContainsAnimal(Dictionary<NearbyCell, Cell> cellDict)
         {
             bool isAnimalNear = false;
 
-            foreach(Cell cell in cellDict.Values)
+            foreach (Cell cell in cellDict.Values)
             {
-                if(cell == null)
+                if (cell == null)
                 {
 
                 }
                 else
                 {
-                    if(cell.AnimalInCell != null)
+                    if (cell.AnimalInCell != null)
                     {
                         isAnimalNear = true;
                     }
@@ -252,6 +301,35 @@ namespace Ecosystem_Simulator
             return isFoodNear;
         }
 
+        private bool letAnimalMate(Dictionary<NearbyCell, Cell> cellDict, Animal animal)
+        {
+            if (animal.canMate())
+            {
+                foreach (Cell cell in cellDict.Values)
+                {
+                    if (cell == null)
+                    {
+
+                    }
+                    else
+                    {
+                        if (cell.AnimalInCell != null)
+                        {
+                            if (animal.GetType == cell.AnimalInCell.GetType && cell.AnimalInCell.canMate())
+                            {
+                                animal.mate(cell.AnimalInCell);
+                                return true;
+                            }
+
+                        }
+
+                    }
+                }
+            }
+
+            return false;
+
+        }
         private bool letAnimalEat(Dictionary<NearbyCell, Cell> cellDict, Animal animal)
         {
             foreach (Cell cell in cellDict.Values)
@@ -294,7 +372,31 @@ namespace Ecosystem_Simulator
             return false;
         }
 
-        
+        private bool letAnimalMove(Dictionary<NearbyCell, Cell> cellDict, Animal animal)
+        {
+            List<Cell> movableCells = new List<Cell>();
+            foreach (Cell cell in cellDict.Values)
+            {
+                movableCells.Add(cell);
+            }
+
+            Random rnd = new Random();
+
+            List<Cell> randomizedList = movableCells.OrderBy(item => rnd.Next()).ToList();
+
+            foreach (Cell cell in randomizedList)
+            {
+                if (cell.AnimalInCell == null)
+                {
+                    cellDict[NearbyCell.target].Remove(animal);
+                    cell.AnimalInCell = animal;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
 
         //This method should be refactored at some point, as it's pretty messy to read.
         //Maybe could just not add the keys for null values to the dict??

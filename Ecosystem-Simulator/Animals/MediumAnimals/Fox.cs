@@ -14,7 +14,7 @@ namespace Ecosystem_Simulator.Animals.MediumAnimals
         public override int MatureAge => 2;
         public override int MaxHunger => 8;
         public override int LitterSize => 1;
-        public override int PregnancyDuration => 3;
+        public override int MaxPregnancyDuration => 3;
 
         public Fox(int age) : base(age)
         {
