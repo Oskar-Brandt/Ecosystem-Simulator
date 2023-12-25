@@ -14,9 +14,9 @@ namespace Ecosystem_Simulator.Animals.SmallAnimals
 
         public override int MaxAge => 16;
         public override int MatureAge => 4;
-        public override int MaxHunger => 6;
+        public override int MaxHunger => 7;
         public override int LitterSize => 3;
-        public override int MaxPregnancyDuration => 2;
+        public override int MaxPregnancyDuration => 3;
         public int NutritionalValue => 2;
 
         public Rabbit(int age) : base(age)
@@ -27,7 +27,7 @@ namespace Ecosystem_Simulator.Animals.SmallAnimals
         {
             if (base.isHungry(foodItem))
             {
-                if (foodItem.GetType() == typeof(Plant))
+                if (foodItem.GetType() == typeof(Dandelion))
                 {
                     return true;
                 }
@@ -41,7 +41,7 @@ namespace Ecosystem_Simulator.Animals.SmallAnimals
             List<Animal> animals = new List<Animal>();
             for (int i = 0; i < LitterSize; i++)
             {
-                animals.Add(new Rabbit(i));
+                animals.Add(new Rabbit(0));
             }
             IsPregnant = false;
             PregnancyDurationCounter = 0;

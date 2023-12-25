@@ -12,14 +12,14 @@ namespace Ecosystem_Simulator
         public State InitState { get; set; }
         public StateChanger StateChanger { get; set; }
 
-        public CellGrid(int gridHeight, int gridWidth, int initialRabbit, int initialFoxes)
+        public CellGrid(int gridHeight, int gridWidth, int initialRabbit, int initialFoxes, int initialDandelions)
         {
             Cells = new Cell[gridHeight, gridWidth];
             StateChanger = new StateChanger();
 
             generateCells(Cells.GetLength(0), Cells.GetLength(1));
 
-            InitState = setInitialState(initialRabbit, initialFoxes);
+            InitState = setInitialState(initialRabbit, initialFoxes, initialDandelions);
 
 
         }
@@ -43,11 +43,9 @@ namespace Ecosystem_Simulator
         //
         //Sets the initial state of the grid, or rather, which cells start out being activated
         //May be determined randomly, though a number can be passed to the param to note how many cells should be activated
-        private State setInitialState(int initialRabbits, int initialFoxes)
+        private State setInitialState(int initialRabbits, int initialFoxes, int initialDandelions)
         {
-            State initState;
-
-            initState = StateChanger.setInitialState(Cells, initialRabbits, initialFoxes);
+            State initState = StateChanger.setInitialState(Cells, initialRabbits, initialFoxes, initialDandelions);
             
             return initState;
         }

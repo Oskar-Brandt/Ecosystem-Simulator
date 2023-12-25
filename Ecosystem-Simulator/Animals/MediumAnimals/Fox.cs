@@ -10,10 +10,10 @@ namespace Ecosystem_Simulator.Animals.MediumAnimals
 {
     internal class Fox : MediumAnimal
     {
-        public override int MaxAge => 12;
+        public override int MaxAge => 14;
         public override int MatureAge => 2;
-        public override int MaxHunger => 8;
-        public override int LitterSize => 1;
+        public override int MaxHunger => 10;
+        public override int LitterSize => 2;
         public override int MaxPregnancyDuration => 3;
 
         public Fox(int age) : base(age)
@@ -24,7 +24,7 @@ namespace Ecosystem_Simulator.Animals.MediumAnimals
         {
             if (base.isHungry(foodItem))
             {
-                if (foodItem.GetType() == typeof(SmallAnimal))
+                if (foodItem.GetType() == typeof(Rabbit))
                 {
                     return true;
                 }
@@ -37,7 +37,7 @@ namespace Ecosystem_Simulator.Animals.MediumAnimals
             List<Animal> animals = new List<Animal>();
             for (int i = 0; i < LitterSize; i++)
             {
-                animals.Add(new Fox(i));
+                animals.Add(new Fox(0));
             }
             return animals;
 

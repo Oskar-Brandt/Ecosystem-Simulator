@@ -6,6 +6,7 @@ using Ecosystem_Simulator.Plants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static Ecosystem_Simulator.StateChanger;
 
 namespace Ecosystem_Simulator
 {
@@ -29,10 +30,9 @@ namespace Ecosystem_Simulator
 
         }
 
-        public State setInitialState(Cell[,] cells, int initialRabbits, int initialFoxes)
+        public State setInitialState(Cell[,] cells, int initialRabbits, int initialFoxes, int initialDandelions)
         {
-            State initState = null;
-            const int numOfDandelions = 10;
+            
 
             for (int i = 0; i < initialRabbits; i++)
             {
@@ -48,12 +48,13 @@ namespace Ecosystem_Simulator
                 addAnimalToCell(cells, fox);
             }
 
-            for (int i = 0; i < numOfDandelions; i++)
+            for (int i = 0; i < initialDandelions; i++)
             {
                 Dandelion dandelion = new Dandelion();
 
                 addPlantToCell(cells, dandelion);
             }
+            State initState = new State(cells);
 
             return initState;
         }
@@ -235,7 +236,11 @@ namespace Ecosystem_Simulator
         {
             foreach (Cell nearbyCell in nearbyCells.Values)
             {
-                if (nearbyCell.AnimalInCell == null)
+                if(nearbyCell == null)
+                {
+
+                }
+                else if (nearbyCell.AnimalInCell == null)
                 {
                     nearbyCell.AnimalInCell = offSpring;
                     return true;
@@ -247,15 +252,22 @@ namespace Ecosystem_Simulator
         private bool letPlantSpread(Dictionary<NearbyCell, Cell> nearbyCells, Plant spreadingPlant)
         {
             Plant newPlant = spreadingPlant.spread();
+            if(newPlant != null){
 
-            foreach (Cell nearbyCell in nearbyCells.Values)
-            {
-                if (nearbyCell.PlantInCell == null)
+                foreach (Cell nearbyCell in nearbyCells.Values)
                 {
-                    nearbyCell.PlantInCell = newPlant;
-                    return true;
+                    if (nearbyCell == null)
+                    {
+
+                    }
+                    else if (nearbyCell.PlantInCell == null)
+                    {
+                        nearbyCell.PlantInCell = newPlant;
+                        return true;
+                    }
                 }
             }
+
             return false;
         }
 
@@ -311,11 +323,19 @@ namespace Ecosystem_Simulator
                     {
 
                     }
+                    else if (cell.AnimalInCell == null)
+                    {
+
+                    }
                     else
                     {
-                        if (cell.AnimalInCell != null)
+                        if (cell.AnimalInCell.Equals(animal))
                         {
-                            if (animal.GetType == cell.AnimalInCell.GetType && cell.AnimalInCell.canMate())
+
+                        }
+                        else if (cell.AnimalInCell != null)
+                        {
+                            if (animal.GetType() == cell.AnimalInCell.GetType() && cell.AnimalInCell.canMate())
                             {
                                 animal.mate(cell.AnimalInCell);
                                 return true;
@@ -377,7 +397,15 @@ namespace Ecosystem_Simulator
             List<Cell> movableCells = new List<Cell>();
             foreach (Cell cell in cellDict.Values)
             {
-                movableCells.Add(cell);
+                if (cell == null)
+                {
+
+                }
+                else
+                {
+                    movableCells.Add(cell);
+                }
+                
             }
 
             Random rnd = new Random();
@@ -407,72 +435,72 @@ namespace Ecosystem_Simulator
 
             if (cellRow == 0)
             {
-                nearbyCells.Add(NearbyCell.leftTopCorner, null);
-                nearbyCells.Add(NearbyCell.top, null);
-                nearbyCells.Add(NearbyCell.rightTopCorner, null);
+                nearbyCells.TryAdd(NearbyCell.leftTopCorner, null);
+                nearbyCells.TryAdd(NearbyCell.top, null);
+                nearbyCells.TryAdd(NearbyCell.rightTopCorner, null);
 
             }
             else if (cellRow == cells.GetLength(0) - 1)
             {
-                nearbyCells.Add(NearbyCell.leftBotCorner, null);
-                nearbyCells.Add(NearbyCell.bot, null);
-                nearbyCells.Add(NearbyCell.rightBotCorner, null);
+                nearbyCells.TryAdd(NearbyCell.leftBotCorner, null);
+                nearbyCells.TryAdd(NearbyCell.bot, null);
+                nearbyCells.TryAdd(NearbyCell.rightBotCorner, null);
             }
 
             if (cellCol == 0)
             {
-                nearbyCells.Add(NearbyCell.leftTopCorner, null);
-                nearbyCells.Add(NearbyCell.left, null);
-                nearbyCells.Add(NearbyCell.leftBotCorner, null);
+                nearbyCells.TryAdd(NearbyCell.leftTopCorner, null);
+                nearbyCells.TryAdd(NearbyCell.left, null);
+                nearbyCells.TryAdd(NearbyCell.leftBotCorner, null);
             }
             else if (cellCol == cells.GetLength(1) - 1)
             {
-                nearbyCells.Add(NearbyCell.rightTopCorner, null);
-                nearbyCells.Add(NearbyCell.right, null);
-                nearbyCells.Add(NearbyCell.rightBotCorner, null);
+                nearbyCells.TryAdd(NearbyCell.rightTopCorner, null);
+                nearbyCells.TryAdd(NearbyCell.right, null);
+                nearbyCells.TryAdd(NearbyCell.rightBotCorner, null);
             }
 
             if (!nearbyCells.ContainsKey(NearbyCell.leftTopCorner))
             {
-                nearbyCells.Add(NearbyCell.leftTopCorner, cells[cellRow - 1, cellCol - 1]);
+                nearbyCells.TryAdd(NearbyCell.leftTopCorner, cells[cellRow - 1, cellCol - 1]);
             }
 
             if (!nearbyCells.ContainsKey(NearbyCell.top))
             {
-                nearbyCells.Add(NearbyCell.leftTopCorner, cells[cellRow - 1, cellCol]);
+                nearbyCells.TryAdd(NearbyCell.top, cells[cellRow - 1, cellCol]);
             }
 
             if (!nearbyCells.ContainsKey(NearbyCell.rightTopCorner))
             {
-                nearbyCells.Add(NearbyCell.rightTopCorner, cells[cellRow - 1, cellCol + 1]);
+                nearbyCells.TryAdd(NearbyCell.rightTopCorner, cells[cellRow - 1, cellCol + 1]);
             }
 
             if (!nearbyCells.ContainsKey(NearbyCell.left))
             {
-                nearbyCells.Add(NearbyCell.left, cells[cellRow, cellCol - 1]);
+                nearbyCells.TryAdd(NearbyCell.left, cells[cellRow, cellCol - 1]);
             }
 
             if (!nearbyCells.ContainsKey(NearbyCell.right))
             {
-                nearbyCells.Add(NearbyCell.right, cells[cellRow, cellCol + 1]);
+                nearbyCells.TryAdd(NearbyCell.right, cells[cellRow, cellCol + 1]);
             }
 
             if (!nearbyCells.ContainsKey(NearbyCell.leftBotCorner))
             {
-                nearbyCells.Add(NearbyCell.leftBotCorner, cells[cellRow + 1, cellCol - 1]);
+                nearbyCells.TryAdd(NearbyCell.leftBotCorner, cells[cellRow + 1, cellCol - 1]);
             }
 
             if (!nearbyCells.ContainsKey(NearbyCell.bot))
             {
-                nearbyCells.Add(NearbyCell.bot, cells[cellRow + 1, cellCol]);
+                nearbyCells.TryAdd(NearbyCell.bot, cells[cellRow + 1, cellCol]);
             }
 
             if (!nearbyCells.ContainsKey(NearbyCell.rightBotCorner))
             {
-                nearbyCells.Add(NearbyCell.rightBotCorner, cells[cellRow + 1, cellCol + 1]);
+                nearbyCells.TryAdd(NearbyCell.rightBotCorner, cells[cellRow + 1, cellCol + 1]);
             }
 
-            nearbyCells.Add(NearbyCell.target, cells[cellRow, cellCol]);
+            nearbyCells.TryAdd(NearbyCell.target, cells[cellRow, cellCol]);
 
             return nearbyCells;
         }

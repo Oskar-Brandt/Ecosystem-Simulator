@@ -18,7 +18,17 @@ namespace Ecosystem_Simulator.Plants
         }
         public override Plant spread()
         {
-            return new Dandelion();
+            Random rand = new Random();
+            bool willSpread = rand.Next(2) == 1;
+            if (willSpread)
+            {
+                return new Dandelion();
+            }
+            else
+            {
+                return null;
+            }
+            
         }
     }
 }

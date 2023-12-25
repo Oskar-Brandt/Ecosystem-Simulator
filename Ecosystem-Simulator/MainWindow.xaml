@@ -5,5 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Ecosystem_Simulator"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="667" Width="1029">
+    <Canvas Margin="10,10,10,7" Height="NaN" Width="NaN">
+        <Canvas Name="CanvasGrid" Height="614" Canvas.Left="320" Canvas.Top="10" Width="563" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <Button Content="Button" Canvas.Left="81" Canvas.Top="270" Height="25" Width="80" Click="Button_Click"/>
+    </Canvas>
 </Window>
