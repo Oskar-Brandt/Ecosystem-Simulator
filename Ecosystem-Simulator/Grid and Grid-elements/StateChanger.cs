@@ -6,7 +6,6 @@ using Ecosystem_Simulator.Plants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static Ecosystem_Simulator.StateChanger;
 
 namespace Ecosystem_Simulator
 {
@@ -23,7 +22,6 @@ namespace Ecosystem_Simulator
             leftBotCorner,
             bot,
             rightBotCorner
-
         }
         public StateChanger()
         {
@@ -32,27 +30,25 @@ namespace Ecosystem_Simulator
 
         public State setInitialState(Cell[,] cells, int initialRabbits, int initialFoxes, int initialDandelions)
         {
-            
-
             for (int i = 0; i < initialRabbits; i++)
             {
                 Rabbit rabbit = new Rabbit(4);
 
-                addAnimalToCell(cells, rabbit);
+                addInitialAnimal(cells, rabbit);
             }
 
             for (int i = 0; i < initialFoxes; i++)
             {
                 Fox fox = new Fox(2);
 
-                addAnimalToCell(cells, fox);
+                addInitialAnimal(cells, fox);
             }
 
             for (int i = 0; i < initialDandelions; i++)
             {
                 Dandelion dandelion = new Dandelion();
 
-                addPlantToCell(cells, dandelion);
+                addInitialPlant(cells, dandelion);
             }
             State initState = new State(cells);
 
@@ -157,7 +153,7 @@ namespace Ecosystem_Simulator
                 {
                     if (animal.PregnancyDurationCounter == animal.MaxPregnancyDuration)
                     {
-                        List<Animal> animalOffspring = animal.giveBirth();
+                        List<Animal> animalOffspring = animal.giveBirth(animal.CurrentHunger);
 
                         foreach (Animal offSpring in animalOffspring)
                         {
@@ -193,7 +189,7 @@ namespace Ecosystem_Simulator
             }
         }
 
-        public void addAnimalToCell(Cell[,] cells, Animal animal)
+        public void addInitialAnimal(Cell[,] cells, Animal animal)
         {
             Random rand = new Random();
 
@@ -208,7 +204,7 @@ namespace Ecosystem_Simulator
             cells[row, col].AnimalInCell = animal;
         }
 
-        public void addPlantToCell(Cell[,] cells, Plant plant)
+        public void addInitialPlant(Cell[,] cells, Plant plant)
         {
             bool cellCanContainPlant = false;
             Random rand = new Random();
@@ -221,13 +217,16 @@ namespace Ecosystem_Simulator
                 col = rand.Next(0, cells.GetLength(1));
                 if (cells[row, col].PlantInCell == null)
                 {
-                    Dictionary<NearbyCell, Cell> nearbyCells = getNearbyCells(cells, row, col);
+                    cells[row, col].PlantInCell = plant;
+                    cellCanContainPlant = true;
 
-                    if (!nearbyCellContainsAnimal(nearbyCells))
-                    {
-                        cells[row, col].PlantInCell = plant;
-                        cellCanContainPlant = true;
-                    }
+                    //Dictionary<NearbyCell, Cell> nearbyCells = getNearbyCells(cells, row, col);
+
+                    //if (!nearbyCellContainsAnimal(nearbyCells))
+                    //{
+                    //    cells[row, col].PlantInCell = plant;
+                    //    cellCanContainPlant = true;
+                    //}
                 }
             }
         }
@@ -236,9 +235,9 @@ namespace Ecosystem_Simulator
         {
             foreach (Cell nearbyCell in nearbyCells.Values)
             {
-                if(nearbyCell == null)
+                if (nearbyCell == null)
                 {
-
+                    continue;
                 }
                 else if (nearbyCell.AnimalInCell == null)
                 {
@@ -252,7 +251,8 @@ namespace Ecosystem_Simulator
         private bool letPlantSpread(Dictionary<NearbyCell, Cell> nearbyCells, Plant spreadingPlant)
         {
             Plant newPlant = spreadingPlant.spread();
-            if(newPlant != null){
+            if (newPlant != null)
+            {
 
                 foreach (Cell nearbyCell in nearbyCells.Values)
                 {
@@ -279,7 +279,7 @@ namespace Ecosystem_Simulator
             {
                 if (cell == null)
                 {
-
+                    continue;
                 }
                 else
                 {
@@ -300,7 +300,7 @@ namespace Ecosystem_Simulator
             {
                 if (cell == null)
                 {
-
+                    continue;
                 }
                 else
                 {
@@ -321,17 +321,17 @@ namespace Ecosystem_Simulator
                 {
                     if (cell == null)
                     {
-
+                        continue;
                     }
                     else if (cell.AnimalInCell == null)
                     {
-
+                        continue;
                     }
                     else
                     {
                         if (cell.AnimalInCell.Equals(animal))
                         {
-
+                            continue;
                         }
                         else if (cell.AnimalInCell != null)
                         {
@@ -356,7 +356,7 @@ namespace Ecosystem_Simulator
             {
                 if (cell == null)
                 {
-
+                    continue;
                 }
                 else
                 {
@@ -399,13 +399,13 @@ namespace Ecosystem_Simulator
             {
                 if (cell == null)
                 {
-
+                    continue;
                 }
                 else
                 {
                     movableCells.Add(cell);
                 }
-                
+
             }
 
             Random rnd = new Random();
@@ -426,81 +426,43 @@ namespace Ecosystem_Simulator
 
 
 
-        //This method should be refactored at some point, as it's pretty messy to read.
-        //Maybe could just not add the keys for null values to the dict??
+        //TODO: Write description
         public Dictionary<NearbyCell, Cell> getNearbyCells(Cell[,] cells, int cellRow, int cellCol)
         {
             Dictionary<NearbyCell, Cell> nearbyCells = new Dictionary<NearbyCell, Cell>();
 
+            List<NearbyCell> enumValues = new List<NearbyCell>() {
+                NearbyCell.leftTopCorner,
+                NearbyCell.top,
+                NearbyCell.rightTopCorner,
+                NearbyCell.left,
+                NearbyCell.target,
+                NearbyCell.right,
+                NearbyCell.leftBotCorner,
+                NearbyCell.bot,
+                NearbyCell.rightBotCorner};
 
-            if (cellRow == 0)
-            {
-                nearbyCells.TryAdd(NearbyCell.leftTopCorner, null);
-                nearbyCells.TryAdd(NearbyCell.top, null);
-                nearbyCells.TryAdd(NearbyCell.rightTopCorner, null);
+            int enumI = 0;
 
-            }
-            else if (cellRow == cells.GetLength(0) - 1)
+            for (int i = cellRow - 1; i <= cellRow + 1; i++)
             {
-                nearbyCells.TryAdd(NearbyCell.leftBotCorner, null);
-                nearbyCells.TryAdd(NearbyCell.bot, null);
-                nearbyCells.TryAdd(NearbyCell.rightBotCorner, null);
+                for (int j = cellCol - 1; j <= cellCol + 1; j++)
+                {
+                    if(i < 0 || i > cells.GetLength(0) - 1)
+                    {
+                        nearbyCells.Add(enumValues[enumI], null);
+                    }
+                    else if(j < 0 || j > cells.GetLength(1) - 1)
+                    {
+                        nearbyCells.Add(enumValues[enumI], null);
+                    }
+                    else
+                    {
+                        nearbyCells.Add(enumValues[enumI], cells[i, j]);
+                    }
+                    enumI++;
+                }
             }
-
-            if (cellCol == 0)
-            {
-                nearbyCells.TryAdd(NearbyCell.leftTopCorner, null);
-                nearbyCells.TryAdd(NearbyCell.left, null);
-                nearbyCells.TryAdd(NearbyCell.leftBotCorner, null);
-            }
-            else if (cellCol == cells.GetLength(1) - 1)
-            {
-                nearbyCells.TryAdd(NearbyCell.rightTopCorner, null);
-                nearbyCells.TryAdd(NearbyCell.right, null);
-                nearbyCells.TryAdd(NearbyCell.rightBotCorner, null);
-            }
-
-            if (!nearbyCells.ContainsKey(NearbyCell.leftTopCorner))
-            {
-                nearbyCells.TryAdd(NearbyCell.leftTopCorner, cells[cellRow - 1, cellCol - 1]);
-            }
-
-            if (!nearbyCells.ContainsKey(NearbyCell.top))
-            {
-                nearbyCells.TryAdd(NearbyCell.top, cells[cellRow - 1, cellCol]);
-            }
-
-            if (!nearbyCells.ContainsKey(NearbyCell.rightTopCorner))
-            {
-                nearbyCells.TryAdd(NearbyCell.rightTopCorner, cells[cellRow - 1, cellCol + 1]);
-            }
-
-            if (!nearbyCells.ContainsKey(NearbyCell.left))
-            {
-                nearbyCells.TryAdd(NearbyCell.left, cells[cellRow, cellCol - 1]);
-            }
-
-            if (!nearbyCells.ContainsKey(NearbyCell.right))
-            {
-                nearbyCells.TryAdd(NearbyCell.right, cells[cellRow, cellCol + 1]);
-            }
-
-            if (!nearbyCells.ContainsKey(NearbyCell.leftBotCorner))
-            {
-                nearbyCells.TryAdd(NearbyCell.leftBotCorner, cells[cellRow + 1, cellCol - 1]);
-            }
-
-            if (!nearbyCells.ContainsKey(NearbyCell.bot))
-            {
-                nearbyCells.TryAdd(NearbyCell.bot, cells[cellRow + 1, cellCol]);
-            }
-
-            if (!nearbyCells.ContainsKey(NearbyCell.rightBotCorner))
-            {
-                nearbyCells.TryAdd(NearbyCell.rightBotCorner, cells[cellRow + 1, cellCol + 1]);
-            }
-
-            nearbyCells.TryAdd(NearbyCell.target, cells[cellRow, cellCol]);
 
             return nearbyCells;
         }

@@ -9,7 +9,7 @@ namespace Ecosystem_Simulator.Plants
 {
     internal class Dandelion : Plant, IEatable
     {
-        public int NutritionalValue => 1;
+        public int NutritionalValue => 2;
 
 
         public Dandelion() : base()

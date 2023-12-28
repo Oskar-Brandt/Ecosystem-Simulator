@@ -10,13 +10,17 @@ namespace Ecosystem_Simulator.Animals.MediumAnimals
 {
     internal class Fox : MediumAnimal
     {
-        public override int MaxAge => 14;
-        public override int MatureAge => 2;
+        public override int MaxAge => 22;
+        public override int MatureAge => 3;
         public override int MaxHunger => 10;
-        public override int LitterSize => 2;
+        public override int LitterSize => 3;
         public override int MaxPregnancyDuration => 3;
 
         public Fox(int age) : base(age)
+        {
+        }
+
+        public Fox(int age, int parentHunger) : base(age, parentHunger)
         {
         }
 
@@ -32,13 +36,15 @@ namespace Ecosystem_Simulator.Animals.MediumAnimals
             return false;
         }
 
-        public override List<Animal> giveBirth()
+        public override List<Animal> giveBirth(int currentHunger)
         {
             List<Animal> animals = new List<Animal>();
             for (int i = 0; i < LitterSize; i++)
             {
-                animals.Add(new Fox(0));
+                animals.Add(new Fox(0, currentHunger));
             }
+            IsPregnant = false;
+            PregnancyDurationCounter = 0;
             return animals;
 
         }

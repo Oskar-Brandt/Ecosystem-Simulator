@@ -1,10 +1,6 @@
-﻿using System;
+﻿using Ecosystem_Simulator.Interfaces;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Cache;
-using System.Text;
-using System.Threading.Tasks;
-using Ecosystem_Simulator.Interfaces;
 
 namespace Ecosystem_Simulator.Animals
 {
@@ -32,6 +28,16 @@ namespace Ecosystem_Simulator.Animals
             PregnancyDurationCounter = 0;
         }
 
+        public Animal(int age, int parentHunger)
+        {
+            CurrentAge = age;
+            CurrentHunger = (int)(Math.Ceiling(parentHunger * 0.75));
+            IsDead = false;
+            IsPregnant = false;
+            MovementSpeed = 1;
+            PregnancyDurationCounter = 0;
+        }
+
         public void eat(IEatable foodItem)
         {
             CurrentHunger += foodItem.NutritionalValue;
@@ -39,7 +45,7 @@ namespace Ecosystem_Simulator.Animals
             {
                 CurrentHunger = MaxHunger;
             }
-            
+
         }
 
         public virtual bool isHungry(IEatable foodItem)
@@ -71,12 +77,12 @@ namespace Ecosystem_Simulator.Animals
             return MovementSpeed;
         }
 
-        public abstract List<Animal> giveBirth();
+        public abstract List<Animal> giveBirth(int currentHunger);
 
         public void age()
         {
             CurrentAge++;
-            if(IsPregnant)
+            if (IsPregnant)
             {
                 PregnancyDurationCounter++;
             }

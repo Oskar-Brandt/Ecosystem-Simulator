@@ -1,9 +1,5 @@
-﻿using System;
+﻿using Ecosystem_Simulator.Interfaces;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Ecosystem_Simulator.Interfaces;
 
 namespace Ecosystem_Simulator.Animals.SmallAnimals
 {
@@ -24,12 +20,17 @@ namespace Ecosystem_Simulator.Animals.SmallAnimals
         {
         }
 
+        public SmallAnimal(int age, int parentHunger) : base(age, parentHunger)
+        {
+
+        }
+
         public override bool isHungry(IEatable foodItem)
         {
             return base.isHungry(foodItem);
         }
 
-        public override abstract List<Animal> giveBirth();
+        public override abstract List<Animal> giveBirth(int currentHunger);
 
     }
 }

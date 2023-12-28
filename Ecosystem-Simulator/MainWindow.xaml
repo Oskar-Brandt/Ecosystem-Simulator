@@ -9,5 +9,11 @@
     <Canvas Margin="10,10,10,7" Height="NaN" Width="NaN">
         <Canvas Name="CanvasGrid" Height="614" Canvas.Left="320" Canvas.Top="10" Width="563" HorizontalAlignment="Left" VerticalAlignment="Center"/>
         <Button Content="Button" Canvas.Left="81" Canvas.Top="270" Height="25" Width="80" Click="Button_Click"/>
+        <Label Content="Foxes:" Height="25" Canvas.Left="55" Canvas.Top="103" Width="49" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <Label Content="Dandelions:" Height="25" Canvas.Left="55" Canvas.Top="187" Width="73" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Label Content="Rabbits:" Height="25" Canvas.Left="55" Canvas.Top="143" Width="58" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <TextBox x:Name="FoxTextBox" Canvas.Left="133" TextWrapping="Wrap" Canvas.Top="107" Width="120" HorizontalAlignment="Left" VerticalAlignment="Center" TextChanged="TextBox_TextChanged"/>
+        <TextBox x:Name="RabbitTextBox" Canvas.Left="133" TextWrapping="Wrap" Canvas.Top="147" Width="120" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <TextBox x:Name="DandelionTextBox" Canvas.Left="133" TextWrapping="Wrap" Canvas.Top="191" Width="120" HorizontalAlignment="Left" VerticalAlignment="Center"/>
     </Canvas>
 </Window>

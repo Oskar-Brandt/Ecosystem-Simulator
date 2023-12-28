@@ -33,13 +33,20 @@ namespace Ecosystem_Simulator
         private int numRows;
         private int numColumns;
 
+        private int foxCount;
+        private int rabbitCount;
+        private int dandelionCount;
+
         public MainWindow()
         {
             InitializeComponent();
-            setGrid(25, 25, 55, 25, 25);
+            setGrid(25, 25, 60, 28, 80);
             states = new List<State>();
 
             beginNewState(cellGrid.InitState);
+
+            
+            //updateDandelionCount();
         }
 
         private void DrawCells()
@@ -104,14 +111,43 @@ namespace Ecosystem_Simulator
             numRows = cells.GetLength(0);
             numColumns = cells.GetLength(1);
 
+            updateFoxCount();
+            updateRabbitCount();
+
+
             DrawCells();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void updateFoxCount()
         {
-            State nextState = cellGrid.generateNextState(currentState);
+            foxCount = cellGrid.getAnimalCount(new Fox(0));
+            FoxTextBox.Text = foxCount.ToString();
+        }
 
-            beginNewState(nextState);
+        private void updateRabbitCount()
+        {
+            rabbitCount = cellGrid.getAnimalCount(new Rabbit(0));
+            RabbitTextBox.Text = rabbitCount.ToString();
+        }
+
+
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            while(true)
+            {
+                State nextState = cellGrid.generateNextState(currentState);
+
+                beginNewState(nextState);
+
+                await(Task.Delay(200));
+
+            }
+            
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }
