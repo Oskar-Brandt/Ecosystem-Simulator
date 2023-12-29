@@ -12,7 +12,7 @@ namespace Ecosystem_Simulator.Animals.MediumAnimals
     {
         public override int MaxAge => 22;
         public override int MatureAge => 3;
-        public override int MaxHunger => 10;
+        public override int MaxHunger => 12;
         public override int LitterSize => 3;
         public override int MaxPregnancyDuration => 3;
 

@@ -40,7 +40,7 @@ namespace Ecosystem_Simulator
         public MainWindow()
         {
             InitializeComponent();
-            setGrid(25, 25, 60, 28, 80);
+            setGrid(26, 34, 120, 35, 90);
             states = new List<State>();
 
             beginNewState(cellGrid.InitState);
@@ -113,6 +113,7 @@ namespace Ecosystem_Simulator
 
             updateFoxCount();
             updateRabbitCount();
+            updateDandelionCount();
 
 
             DrawCells();
@@ -121,13 +122,43 @@ namespace Ecosystem_Simulator
         private void updateFoxCount()
         {
             foxCount = cellGrid.getAnimalCount(new Fox(0));
-            FoxTextBox.Text = foxCount.ToString();
+            if (foxCount == 0)
+            {
+                FoxCountLabel.Content = "EXTINCT";
+            }
+            else
+            {
+                FoxCountLabel.Content = foxCount.ToString();
+            }
+            
         }
 
         private void updateRabbitCount()
         {
             rabbitCount = cellGrid.getAnimalCount(new Rabbit(0));
-            RabbitTextBox.Text = rabbitCount.ToString();
+            if(rabbitCount == 0 )
+            {
+                RabbitCountLabel.Content = "EXTINCT";
+            }
+            else
+            {
+                RabbitCountLabel.Content = rabbitCount.ToString();
+            }
+            
+        }
+
+        private void updateDandelionCount()
+        {
+            dandelionCount = cellGrid.getPlantCount(new Dandelion());
+            if (dandelionCount == 0)
+            {
+                DandelionCountLabel.Content = "EXTINCT";
+            }
+            else
+            {
+                DandelionCountLabel.Content = dandelionCount.ToString();
+            }
+
         }
 
 

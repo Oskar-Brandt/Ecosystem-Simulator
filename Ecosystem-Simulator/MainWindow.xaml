@@ -5,15 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Ecosystem_Simulator"
         mc:Ignorable="d"
-        Title="MainWindow" Height="667" Width="1029">
+        Title="MainWindow" Height="725" Width="1057">
     <Canvas Margin="10,10,10,7" Height="NaN" Width="NaN">
-        <Canvas Name="CanvasGrid" Height="614" Canvas.Left="320" Canvas.Top="10" Width="563" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <Canvas Name="CanvasGrid" Height="544" Canvas.Left="227" Canvas.Top="73" Width="652" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <Button Content="Button" Canvas.Left="81" Canvas.Top="270" Height="25" Width="80" Click="Button_Click"/>
-        <Label Content="Foxes:" Height="25" Canvas.Left="55" Canvas.Top="103" Width="49" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-        <Label Content="Dandelions:" Height="25" Canvas.Left="55" Canvas.Top="187" Width="73" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <Label Content="Rabbits:" Height="25" Canvas.Left="55" Canvas.Top="143" Width="58" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        <TextBox x:Name="FoxTextBox" Canvas.Left="133" TextWrapping="Wrap" Canvas.Top="107" Width="120" HorizontalAlignment="Left" VerticalAlignment="Center" TextChanged="TextBox_TextChanged"/>
-        <TextBox x:Name="RabbitTextBox" Canvas.Left="133" TextWrapping="Wrap" Canvas.Top="147" Width="120" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        <TextBox x:Name="DandelionTextBox" Canvas.Left="133" TextWrapping="Wrap" Canvas.Top="191" Width="120" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <Label Content="FOXES:" Height="32" Canvas.Left="318" Canvas.Top="34" Width="63" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FFDE2828" FontWeight="Bold" FontSize="16"/>
+        <Label Content="DANDELIONS:" Height="32" Canvas.Left="643" Canvas.Top="34" Width="117" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#FFEDC56D" FontSize="16" FontWeight="Bold"/>
+        <Label Content="RABBITS:" Height="32" Canvas.Left="466" Canvas.Top="34" Width="79" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="#FF696060"/>
+        <Label x:Name="FoxCountLabel" Content="FoxCount" Height="30" Canvas.Left="381" Canvas.Top="36" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" Foreground="#FFDE2828" Width="75"/>
+        <Label x:Name="RabbitCountLabel" Content="RabbitCount" Height="32" Canvas.Left="545" Canvas.Top="36" FontSize="14" FontWeight="Bold" Foreground="#FF696060" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <Label x:Name="DandelionCountLabel" Content="DandelionCount" Height="32" Canvas.Left="760" Canvas.Top="36" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FFEDC56D" FontSize="14" FontWeight="Bold"/>
     </Canvas>
 </Window>

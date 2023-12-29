@@ -9,10 +9,10 @@ namespace Ecosystem_Simulator.Animals.SmallAnimals
 
         public override int MaxAge => 22;
         public override int MatureAge => 4;
-        public override int MaxHunger => 8;
+        public override int MaxHunger => 10;
         public override int LitterSize => 3;
-        public override int MaxPregnancyDuration => 3;
-        public int NutritionalValue => 3;
+        public override int MaxPregnancyDuration => 2;
+        public int NutritionalValue => 4;
 
         public Rabbit(int age) : base(age)
         {

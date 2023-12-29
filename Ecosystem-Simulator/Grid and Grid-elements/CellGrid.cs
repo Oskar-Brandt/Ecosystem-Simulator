@@ -1,6 +1,7 @@
 ﻿using Ecosystem_Simulator.Animals;
 using Ecosystem_Simulator.Animals.MediumAnimals;
 using Ecosystem_Simulator.Animals.SmallAnimals;
+using Ecosystem_Simulator.Plants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,6 +77,26 @@ namespace Ecosystem_Simulator
             }
 
             return animalCount;
+        }
+
+        public int getPlantCount(Plant plant)
+        {
+            int plantCount = 0;
+
+            Type plantType = plant.GetType();
+
+            for (int i = 0; i < Cells.GetLength(0); i++)
+            {
+                for (int j = 0; j < Cells.GetLength(1); j++)
+                {
+                    if (plantType.IsInstanceOfType(Cells[i, j].PlantInCell))
+                    {
+                        plantCount++;
+                    }
+                }
+            }
+
+            return plantCount;
         }
 
         
