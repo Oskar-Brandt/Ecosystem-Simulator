@@ -6,16 +6,6 @@ namespace Ecosystem_Simulator.Animals.SmallAnimals
     abstract class SmallAnimal : Animal
     {
 
-        public override abstract int MaxAge { get; }
-
-        public override abstract int MatureAge { get; }
-
-        public override abstract int MaxHunger { get; }
-
-        public override abstract int LitterSize { get; }
-
-        public override abstract int MaxPregnancyDuration { get; }
-
         public SmallAnimal(int age) : base(age)
         {
         }
@@ -24,13 +14,6 @@ namespace Ecosystem_Simulator.Animals.SmallAnimals
         {
 
         }
-
-        public override bool isHungry(IEatable foodItem)
-        {
-            return base.isHungry(foodItem);
-        }
-
-        public override abstract List<Animal> giveBirth(int currentHunger);
 
     }
 }

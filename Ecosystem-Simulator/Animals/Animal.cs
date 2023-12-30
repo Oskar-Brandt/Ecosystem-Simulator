@@ -1,16 +1,18 @@
-﻿using Ecosystem_Simulator.Interfaces;
+﻿using Ecosystem_Simulator.Animals.SmallAnimals;
+using Ecosystem_Simulator.Interfaces;
 using System;
 using System.Collections.Generic;
 
 namespace Ecosystem_Simulator.Animals
 {
-    abstract class Animal
+    abstract class Animal : LifeForm
     {
         public abstract int MaxAge { get; }
         public abstract int MatureAge { get; }
         public abstract int MaxHunger { get; }
         public abstract int LitterSize { get; }
         public abstract int MaxPregnancyDuration { get; }
+        public abstract IEatable Diet { get; }
         public int CurrentAge { get; set; }
         public int CurrentHunger { get; set; }
         public bool IsDead { get; set; }
@@ -18,25 +20,26 @@ namespace Ecosystem_Simulator.Animals
         public int MovementSpeed { get; set; }
         public int PregnancyDurationCounter { get; set; }
 
-        public Animal(int age)
+        public Animal()
+        {
+            IsDead = false;
+            IsPregnant = false;
+            MovementSpeed = 1;
+            PregnancyDurationCounter = 0;
+        }
+        public Animal(int age) : this()
         {
             CurrentAge = age;
             CurrentHunger = (int)(Math.Ceiling(MaxHunger * 0.75));
-            IsDead = false;
-            IsPregnant = false;
-            MovementSpeed = 1;
-            PregnancyDurationCounter = 0;
         }
 
-        public Animal(int age, int parentHunger)
+        public Animal(int age, int parentHunger) : this()
         {
             CurrentAge = age;
             CurrentHunger = (int)(Math.Ceiling(parentHunger * 0.75));
-            IsDead = false;
-            IsPregnant = false;
-            MovementSpeed = 1;
-            PregnancyDurationCounter = 0;
         }
+
+        public abstract Animal createOffspring();
 
         public void eat(IEatable foodItem)
         {
@@ -48,9 +51,25 @@ namespace Ecosystem_Simulator.Animals
 
         }
 
-        public virtual bool isHungry(IEatable foodItem)
+        public bool isHungry(IEatable foodItem)
         {
-            return CurrentHunger < MaxHunger;
+            if (CurrentHunger < MaxHunger)
+            {
+                if (canEatFood(foodItem))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool canEatFood(IEatable foodItem)
+        {
+            if (foodItem.GetType() == Diet.GetType())
+            {
+                return true;
+            }
+            return false;
         }
 
         public void mate(Animal matingPartner)
@@ -77,7 +96,18 @@ namespace Ecosystem_Simulator.Animals
             return MovementSpeed;
         }
 
-        public abstract List<Animal> giveBirth(int currentHunger);
+        public List<Animal> giveBirth()
+        {
+            List<Animal> animals = new List<Animal>();
+            for (int i = 0; i < LitterSize; i++)
+            {
+                animals.Add(createOffspring());
+            }
+            IsPregnant = false;
+            PregnancyDurationCounter = 0;
+            return animals;
+
+        }
 
         public void age()
         {

@@ -40,7 +40,7 @@ namespace Ecosystem_Simulator
         public MainWindow()
         {
             InitializeComponent();
-            setGrid(26, 34, 120, 35, 90);
+            setGrid(26, 34, 70, 30, 100);
             states = new List<State>();
 
             beginNewState(cellGrid.InitState);
@@ -166,9 +166,7 @@ namespace Ecosystem_Simulator
         {
             while(true)
             {
-                State nextState = cellGrid.generateNextState(currentState);
-
-                beginNewState(nextState);
+                Button_Click_1(sender, e);
 
                 await(Task.Delay(200));
 
@@ -179,6 +177,13 @@ namespace Ecosystem_Simulator
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
 
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            State nextState = cellGrid.generateNextState(currentState);
+
+            beginNewState(nextState);
         }
     }
 }

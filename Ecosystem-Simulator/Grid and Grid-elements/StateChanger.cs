@@ -60,13 +60,8 @@ namespace Ecosystem_Simulator
 
             Cell[,] currentCells = currentState.Cells;
 
-            List<Dictionary<NearbyCell, Cell>> rabbitTargets = new List<Dictionary<NearbyCell, Cell>>();
-            List<Dictionary<NearbyCell, Cell>> foxTargets = new List<Dictionary<NearbyCell, Cell>>();
+            List<Dictionary<NearbyCell, Cell>> animalTargets = new List<Dictionary<NearbyCell, Cell>>();
             List<Dictionary<NearbyCell, Cell>> plantTargets = new List<Dictionary<NearbyCell, Cell>>();
-
-            int newRabbitCount = 0;
-            int newFoxCount = 0;
-            int newPlantCount = 0;
 
             for (int i = 0; i < currentCells.GetLength(0); i++)
             {
@@ -77,17 +72,8 @@ namespace Ecosystem_Simulator
                     {
                         if (currentCell.AnimalInCell != null)
                         {
-                            if (currentCell.AnimalInCell is Rabbit)
-                            {
-                                Dictionary<NearbyCell, Cell> rabbitTarget = getNearbyCells(currentCells, i, j);
-                                rabbitTargets.Add(rabbitTarget);
-                            }
-
-                            if (currentCell.AnimalInCell is Fox)
-                            {
-                                Dictionary<NearbyCell, Cell> foxTarget = getNearbyCells(currentCells, i, j);
-                                foxTargets.Add(foxTarget);
-                            }
+                            Dictionary<NearbyCell, Cell> animalTarget = getNearbyCells(currentCells, i, j);
+                            animalTargets.Add(animalTarget);
                         }
 
                         if (currentCell.PlantInCell != null)
@@ -106,14 +92,9 @@ namespace Ecosystem_Simulator
                 plantTakesTurn(plantTarget);
             }
 
-            foreach (Dictionary<NearbyCell, Cell> rabbitTarget in rabbitTargets)
+            foreach (Dictionary<NearbyCell, Cell> animalTarget in animalTargets)
             {
-                animalTakesTurn(rabbitTarget);
-            }
-
-            foreach (Dictionary<NearbyCell, Cell> foxTarget in foxTargets)
-            {
-                animalTakesTurn(foxTarget);
+                animalTakesTurn(animalTarget);
             }
 
             return currentState;
@@ -153,7 +134,7 @@ namespace Ecosystem_Simulator
                 {
                     if (animal.PregnancyDurationCounter == animal.MaxPregnancyDuration)
                     {
-                        List<Animal> animalOffspring = animal.giveBirth(animal.CurrentHunger);
+                        List<Animal> animalOffspring = animal.giveBirth();
 
                         foreach (Animal offSpring in animalOffspring)
                         {
@@ -295,6 +276,7 @@ namespace Ecosystem_Simulator
         private bool nearbyCellContainsFood(Dictionary<NearbyCell, Cell> cellDict)
         {
             bool isFoodNear = false;
+            Animal targetAnimal = cellDict[NearbyCell.target].AnimalInCell;
 
             foreach (Cell cell in cellDict.Values)
             {
@@ -304,9 +286,21 @@ namespace Ecosystem_Simulator
                 }
                 else
                 {
-                    if (cell.hasFood())
+                    if (cell.AnimalInCell != null)
                     {
-                        isFoodNear = true;
+                        if(cell.AnimalInCell.GetType() == targetAnimal.Diet.GetType())
+                        {
+                            isFoodNear = true;
+                        }
+
+                        
+                    }
+                    if(cell.PlantInCell != null)
+                    {
+                        if (cell.PlantInCell.GetType() == targetAnimal.Diet.GetType())
+                        {
+                            isFoodNear = true;
+                        }
                     }
                 }
             }
@@ -394,37 +388,40 @@ namespace Ecosystem_Simulator
 
         private bool letAnimalMove(Dictionary<NearbyCell, Cell> cellDict, Animal animal)
         {
-            List<Cell> movableCells = new List<Cell>();
-            foreach (Cell cell in cellDict.Values)
+            if (!nearbyCellContainsFood(cellDict))
             {
-                if (cell == null)
+                List<Cell> movableCells = new List<Cell>();
+                foreach (Cell cell in cellDict.Values)
                 {
-                    continue;
+                    if (cell == null)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        movableCells.Add(cell);
+                    }
+
                 }
-                else
+
+                Random rnd = new Random();
+
+                List<Cell> randomizedList = movableCells.OrderBy(item => rnd.Next()).ToList();
+
+                foreach (Cell cell in randomizedList)
                 {
-                    movableCells.Add(cell);
+                    if (cell.AnimalInCell == null)
+                    {
+                        cellDict[NearbyCell.target].Remove(animal);
+                        cell.AnimalInCell = animal;
+                        return true;
+                    }
                 }
-
-            }
-
-            Random rnd = new Random();
-
-            List<Cell> randomizedList = movableCells.OrderBy(item => rnd.Next()).ToList();
-
-            foreach (Cell cell in randomizedList)
-            {
-                if (cell.AnimalInCell == null)
-                {
-                    cellDict[NearbyCell.target].Remove(animal);
-                    cell.AnimalInCell = animal;
-                    return true;
-                }
+                return false;
             }
             return false;
+             
         }
-
-
 
         //TODO: Write description
         public Dictionary<NearbyCell, Cell> getNearbyCells(Cell[,] cells, int cellRow, int cellCol)
